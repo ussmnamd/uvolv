@@ -1,25 +1,7 @@
-import { PageHeader } from "@/components/page-header";
-import { SiteShell } from "@/components/site-shell";
-import { workItems } from "@/content/work";
-
-export default function WorkPage() {
-  return (
-    <SiteShell>
-      <PageHeader
-        eyebrow="Work"
-        intro="The first public work page starts with shipped proof. As project assets are gathered, this becomes a full case study library."
-        title="Live websites and an AI sales funnel."
-      />
-      <section className="container grid gap-5 pb-24">
-        {workItems.map((item) => (
-          <article className="rounded-[28px] border border-[var(--line)] bg-white/[0.035] p-8 md:p-10" key={item.title}>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--mint)]">{item.type}</p>
-            <h2 className="display mt-5 text-5xl">{item.title}</h2>
-            <p className="mt-5 max-w-3xl text-lg text-white">{item.result}</p>
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{item.description}</p>
-          </article>
-        ))}
-      </section>
-    </SiteShell>
-  );
-}
+import type { Metadata } from "next";
+import { PageIntro, Eyebrow } from "@/components/ui";
+import { WorkGrid } from "@/components/work-grid";
+import { ClientWorkGrid } from "@/components/client-work";
+export const metadata: Metadata = { title: "Work and connected system examples", description: "Explore UVOLV website projects and demonstrations of connected lead flows, operational software, and business systems.", alternates: { canonical: "/work" } };
+function WorkPage() { return <><PageIntro label="Work & systems" title={"IDEAS ARE GOOD.\nWORKING SYSTEMS ARE BETTER."} description="A closer look at the websites and connected systems we build. Demonstrations are clearly labeled and use illustrative data." /><div className="section-wrap work-page"><Eyebrow>Selected website projects</Eyebrow><ClientWorkGrid /><Eyebrow>Connected system demonstrations</Eyebrow><WorkGrid /><p className="work-page-note">System demonstrations explain an approach. They are separate from client work and do not claim measured business results.</p></div></>; }
+export { WorkPage as default };

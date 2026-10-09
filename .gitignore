@@ -3,6 +3,7 @@ node_modules/
 
 # next
 .next/
+*.tsbuildinfo
 out/
 
 # production
@@ -11,6 +12,8 @@ dist/
 
 # env
 .env
+.env.*
+!.env.example
 .env*.local
 
 # logs
@@ -22,3 +25,8 @@ pnpm-debug.log*
 # system
 .DS_Store
 Thumbs.db
+
+# historical preview files retained locally
+/server.js
+/src/
+/public/styles.css

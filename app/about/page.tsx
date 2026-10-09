@@ -1,29 +1,8 @@
-import { PageHeader } from "@/components/page-header";
-import { Section } from "@/components/section";
-import { SiteShell } from "@/components/site-shell";
-
-export default function AboutPage() {
-  return (
-    <SiteShell>
-      <PageHeader
-        eyebrow="About"
-        intro="Uvolv is built for operators who need practical digital systems, not vague innovation theatre."
-        title="A build partner for businesses ready to operate cleaner."
-      />
-      <Section
-        eyebrow="Positioning"
-        intro="The agency sits between web design, automation, and software because most business bottlenecks do not respect those categories."
-        title="Design the front. Fix the back."
-      >
-        <div className="space-y-6 text-lg leading-8 text-[var(--text-muted)]">
-          <p>
-            Uvolv creates the public website, the conversion path, and the internal system behind it. That means the work can start at branding and landing pages, then continue into CRM flows, AI automation, dashboards, and custom software.
-          </p>
-          <p>
-            The goal is simple: make the business easier to trust, easier to contact, and easier to run.
-          </p>
-        </div>
-      </Section>
-    </SiteShell>
-  );
+import type { Metadata } from "next";
+import { PageIntro, Eyebrow, ActionLink } from "@/components/ui";
+import { ProcessSection } from "@/components/home-page";
+export const metadata: Metadata = { title: "About UVOLV", description: "UVOLV connects digital presence and business operations through websites, automation, funnels, and focused software.", alternates: { canonical: "/about" } };
+function AboutPage() {
+  return <><PageIntro label="You evolve. So should your systems." title={"GOOD DESIGN.\nBETTER CONNECTIONS."} description="UVOLV builds the digital presence and operational systems that help businesses take their next step." /><div className="section-wrap inner-section"><div className="about-lead"><p className="about-statement">We look at what happens after someone clicks.</p><div><p>A website can look right and still leave the business doing the same repeated work. A useful system connects the experience to the process behind it.</p><p>We bring websites, lead flows, AI automation, and custom software into the same conversation. The build starts with the business problem.</p><p>From a first automation to a custom operational platform, the aim stays the same: clear scope, reliable delivery, and a system your team can understand.</p></div></div><Eyebrow>What you can expect</Eyebrow><div className="about-values">{[{ title: "Clarity first.", text: "We define the problem, scope, and responsibilities before work starts. You know what is included and what needs a separate decision." }, { title: "Connected thinking.", text: "We consider the website, tools, people, and workflow together. Every integration should have a clear purpose." }, { title: "A proper handover.", text: "We document the system and explain its operation. Support periods and ongoing maintenance are agreed in the scope." }].map((value, index) => <article key={value.title}><span>0{index + 1}</span><h3>{value.title}</h3><p>{value.text}</p></article>)}</div><ActionLink href="/contact">Tell us about your business</ActionLink></div><ProcessSection /></>;
 }
+export { AboutPage as default };

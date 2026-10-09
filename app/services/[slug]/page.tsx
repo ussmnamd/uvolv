@@ -1,47 +1,17 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Check } from "lucide-react";
-import { PageHeader } from "@/components/page-header";
-import { SiteShell } from "@/components/site-shell";
-import { getServiceBySlug, services } from "@/content/services";
-
-type ServicePageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
-
-export const generateStaticParams = () => {
-  return services.map((service) => ({ slug: service.slug }));
-};
-
-export default async function ServicePage({ params }: ServicePageProps) {
-  const { slug } = await params;
-  const service = getServiceBySlug(slug);
-
-  if (!service) {
-    notFound();
-  }
-
-  return (
-    <SiteShell>
-      <PageHeader eyebrow={service.eyebrow} intro={service.summary} title={service.title} />
-      <section className="container grid gap-10 pb-24 md:grid-cols-[0.75fr_1.25fr]">
-        <aside className="rounded-[28px] border border-[var(--line)] bg-white/[0.035] p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--mint)]">Starting from</p>
-          <p className="display mt-4 text-5xl">{service.startingFrom}</p>
-        </aside>
-        <div>
-          <p className="max-w-3xl text-xl leading-9 text-[var(--text-soft)]">{service.detail}</p>
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {service.outcomes.map((outcome) => (
-              <div className="flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-white/[0.035] p-5" key={outcome}>
-                <Check className="text-[var(--mint)]" size={18} />
-                <span className="text-sm font-semibold">{outcome}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    </SiteShell>
-  );
+import { services } from "@/content/site";
+import { ActionLink, Eyebrow, PageIntro } from "@/components/ui";
+import { SystemVisual } from "@/components/system-visual";
+type Props = { params: Promise<{ slug: string }> };
+export function generateStaticParams() { return services.map(service => ({ slug: service.slug })); }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params; const service = services.find(item => item.slug === slug);
+  return { title: service?.title || "Service not found", description: service?.description, alternates: { canonical: `/services/${slug}` } };
 }
+async function ServicePage({ params }: Props) {
+  const { slug } = await params; const service = services.find(item => item.slug === slug); if (!service) notFound();
+  const variant = service.slug === "websites" ? "website" : service.slug === "custom-software" ? "dashboard" : "leads";
+  return <><PageIntro label={`${service.number} / ${service.label}`} title={service.headline} description={service.intro} /><div className="section-wrap inner-section"><div className={`service-detail-visual surface-${service.color}`}><SystemVisual variant={variant} /></div><div className="detail-grid"><div><Eyebrow>A defined purpose</Eyebrow><h2 className="display">BUILT FOR<br />THE WAY YOU WORK.</h2><p>{service.fits}</p><p className="boundary-note">{service.boundary}</p><ActionLink href={`/contact?service=${service.slug}`}>Discuss this service</ActionLink></div><div><Eyebrow>What we can build</Eyebrow><ul className="detail-list">{service.outcomes.map((outcome, index) => <li key={outcome}><span>0{index + 1}</span>{outcome}</li>)}</ul></div></div><div className="detail-grid"><div><Eyebrow>How it comes together</Eyebrow><h2 className="display">A CLEAR PLAN.<br />A WORKING SYSTEM.</h2><p>We agree on the scope, technical requirements, and delivery before the build starts.</p></div><ol className="detail-list">{service.steps.map((step, index) => <li key={step}><span>0{index + 1}</span>{step}</li>)}</ol></div><div className="related-section"><Eyebrow>See the idea in practice</Eyebrow><h2 className="display">LESS THEORY. MORE CONTEXT.</h2><ActionLink href={`/work/${service.example}`} secondary>Explore a system example</ActionLink></div></div></>;
+}
+export { ServicePage as default };

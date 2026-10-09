@@ -1,49 +1,13 @@
-import { Mail, MessageCircle, Video } from "lucide-react";
-import { PageHeader } from "@/components/page-header";
-import { SiteShell } from "@/components/site-shell";
-import { siteConfig } from "@/content/site";
-
-export default function ContactPage() {
-  return (
-    <SiteShell>
-      <PageHeader
-        eyebrow="Contact"
-        intro="Start with a Zoom call, an audit request, WhatsApp, email, or the form. The first conversation is about finding the highest-leverage build."
-        title="Tell us what needs to work better."
-      />
-      <section className="container grid gap-8 pb-24 md:grid-cols-[0.85fr_1.15fr]">
-        <div className="space-y-4">
-          {[
-            { icon: Video, label: "Schedule on Zoom", href: siteConfig.scheduleUrl },
-            { icon: MessageCircle, label: "WhatsApp", href: siteConfig.whatsapp },
-            { icon: Mail, label: siteConfig.email, href: `mailto:${siteConfig.email}` }
-          ].map((item) => (
-            <a className="flex items-center gap-4 rounded-2xl border border-[var(--line)] bg-white/[0.035] p-5" href={item.href} key={item.label}>
-              <item.icon className="text-[var(--mint)]" size={20} />
-              <span className="font-semibold">{item.label}</span>
-            </a>
-          ))}
-        </div>
-        <form className="rounded-[28px] border border-[var(--line)] bg-white/[0.035] p-6 md:p-8" id="audit">
-          <div className="grid gap-5">
-            <label className="grid gap-2 text-sm font-semibold">
-              Name
-              <input className="rounded-2xl border border-[var(--line)] bg-black/30 px-4 py-3 text-white outline-none focus:border-[var(--mint)]" name="name" />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold">
-              Email
-              <input className="rounded-2xl border border-[var(--line)] bg-black/30 px-4 py-3 text-white outline-none focus:border-[var(--mint)]" name="email" type="email" />
-            </label>
-            <label className="grid gap-2 text-sm font-semibold">
-              What do you need built?
-              <textarea className="min-h-36 rounded-2xl border border-[var(--line)] bg-black/30 px-4 py-3 text-white outline-none focus:border-[var(--mint)]" name="message" />
-            </label>
-            <button className="rounded-full bg-[var(--mint)] px-7 py-4 text-sm font-bold text-black" type="submit">
-              Request an audit
-            </button>
-          </div>
-        </form>
-      </section>
-    </SiteShell>
-  );
+import type { Metadata } from "next";
+import { PageIntro, Eyebrow } from "@/components/ui";
+import { ContactForm } from "@/components/contact-form";
+import { site, services, packages } from "@/content/site";
+export const metadata: Metadata = { title: "Discuss your project", description: "Tell UVOLV about your website, automation, software, or lead system. Contact info@uvolv.com or WhatsApp +92 333 2153959.", alternates: { canonical: "/contact" } };
+export const dynamic = "force-dynamic";
+async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const params = await searchParams;
+  const chosen = typeof params.service === "string" && services.some(service => service.slug === params.service) ? params.service : params.interest === "partnership" ? "partnership" : "";
+  const selectedPackage = typeof params.package === "string" ? packages.find(tier => tier.name.toLowerCase() === params.package)?.name || "" : "";
+  return <><PageIntro label="Start a conversation" title={"WHAT IS YOUR\nNEXT BIG STEP?"} description="Tell us what you want to build, improve, or connect. We will start with the problem and find a practical direction." /><div className="section-wrap contact-layout"><aside className="contact-aside"><Eyebrow>A useful first conversation</Eyebrow><h2 className="display">NO PERFECT BRIEF<br />REQUIRED.</h2><p>A rough idea is enough to start. A little context helps us understand the business behind the project.</p><ul><li><span>01</span>Tell us about the business and the challenge.</li><li><span>02</span>We identify what needs a closer look.</li><li><span>03</span>We agree on a sensible next step.</li></ul><div className="contact-direct"><a href={`mailto:${site.email}`}>{site.email} ↗</a><a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp +92 333 2153959 ↗</a>{site.booking && <a href={site.booking} target="_blank" rel="noopener noreferrer">Book a discovery call ↗</a>}</div></aside><ContactForm deliveryEnabled={Boolean(process.env.CONTACT_WEBHOOK_URL)} email={site.email} initialService={chosen} initialPackage={selectedPackage} /></div></>;
 }
+export { ContactPage as default };
